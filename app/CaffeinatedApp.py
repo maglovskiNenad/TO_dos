@@ -1,62 +1,98 @@
-
 from customtkinter import *
-from pandas.io.sas.sas_constants import column_name_length_length
+import json
+
+from yaml import safe_dump_all
+
+from app.CustomButton import Button
+from datetime import datetime
 
 
 class CaffeinatedMainWindow(CTk):
     def __init__(self):
         super().__init__()
+        self.title("CaffeinatedApp")
+        self.geometry("550x500")
+        self.columnconfigure(0, minsize=20, weight=0)
+        self.grid_rowconfigure(0, weight=1)
         self.left_frame = None
         self.main_frame = None
         self.right_frame = None
-        self.user_main_frame()
+        self.refresh_the_page()
 
-    def user_main_frame(self):
-        self.title("CaffeinatedApp")
-        self.geometry("980x700")
-        self.columnconfigure(0, weight=0)
-        self.grid_rowconfigure(0, weight=1)
-        self.user_button_window()
-        self.user_main_window()
-        self.billing_window()
+        #Left side of the screen field
+        self.left_frame = CTkFrame(self, height=200, width=250, corner_radius=10)
+        self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
+        #Descriptive label
+        label = CTkLabel(self.left_frame, text="To Do List", font=("bahnschrift semilight", 18))
+        label.grid(row=1, column=0, padx=10, pady=10)
 
-    def user_button_window(self):
-        self.left_frame = CTkFrame(self,height=700, width=250,corner_radius=10)
-        self.left_frame.grid(row=0, column=0,padx=10, pady=10, sticky="ns")
+        #Adding todos btn
+        statistic = Button(self.left_frame, text="Add", command=self.add_todos, corner_radius=10)
+        statistic.grid(row=2, column=0, padx=10, pady=10)
 
-        label = CTkLabel(self.left_frame,text="Caffeinated",font=("bahnschrift semilight", 18))
-        label.grid(row=0,column=0,padx=10,pady=10)
+        #Entry for adding todos
+        self.todo = CTkEntry(self.left_frame, placeholder_text="New Todos")
+        self.todo.grid(row=3, column=0, padx=10, pady=10)
 
-        statistic = CTkButton(self.left_frame,text="Statistic",corner_radius=10)
-        statistic.grid(row=1, column=0,padx=10,pady=10)
+        goods = Button(self.left_frame, text="Remove", command=self.remove_todo, corner_radius=10)
+        goods.grid(row=4, column=0, padx=10, pady=10)
 
-        goods = CTkButton(self.left_frame,text="Goods",corner_radius=10)
-        goods.grid(row=2,column=0)
+        self.id = CTkEntry(self.left_frame, placeholder_text="Please enter Id:")
+        self.id.grid(row=5, column=0, padx=10, pady=10)
 
-        sales = CTkButton(self.left_frame,text="Sales",corner_radius=10)
-        sales.grid(row=3,column=0,padx=10,pady=10)
+    def refresh_the_page(self):
+        # Main side of the screen field
+        self.main_frame = CTkFrame(self, height=200, width=700, corner_radius=10)
+        self.main_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        signup = CTkButton(self.left_frame,text="Login",corner_radius=10)
-        signup.grid(row=6,column=0,padx=10,pady=10)
-
-        toggle_theme = CTkButton(self.left_frame,text="Toggle me",corner_radius=10)
-        toggle_theme.grid(row=7,column=0)
-
-    def user_main_window(self):
-        self.main_frame = CTkFrame(self,height=700,width=500,corner_radius=10)
-        self.main_frame.grid(row=0,column=1,padx=10, pady=10,sticky="nsew")
-        name = CTkLabel(self.main_frame, text="Caffeinated table", font=("bahnschrift semilight", 18))
-        name.grid(row=0, column=0, padx=20, pady=20)
-
-    def billing_window(self):
-        self.right_frame = CTkFrame(self,height=700, width=250, corner_radius=10)
-        self.right_frame.grid(row=0, column=2,padx=10, pady=10, sticky="nsew")
-
-        name = CTkLabel(self.right_frame,text="Caffeinated billing proces",font=("bahnschrift semilight", 18))
-        name.grid(row=0,column=0,padx=20,pady=20)
+        #Opening all todos that are in the json list
+        with open("todos.json") as file:
+            data = json.load(file)
+            for text in data:
+                todo_label = CTkLabel(self.main_frame,text=f"Id od todo:{str(text["id"])}.\n "
+                                                           f"Description of Todo:{text["description"]}\n"
+                                                           f"Time: {text["createdAd"]}")
+                todo_label.grid(row=text["id"], column=0, padx=10, pady=10)
 
 
+    def add_todos(self):
+        """Adding new in the list"""
+        entered_todo = self.todo.get()
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        with open("todos.json") as file:
+            data = json.load(file)
+
+        one_todo = {
+            'description': entered_todo,
+            'id': len(data) + 1,
+            'status': 'todo',
+            'createdAd': current_time,
+            'updatedA': current_time
+        }
+
+        data.append(one_todo)
+
+        with open("todos.json","w") as file:
+            json.dump(data,file,indent=4)
+
+        self.todo.delete(0, END)
+        self.refresh_the_page()
+
+    def remove_todo(self):
+        entered_id = self.id.get()
+
+        with open("todos.json") as file:
+            data = json.load(file)
+
+        todos = [todo for todo in data if entered_id != data["id"]]
+        #id proveri
+        with open("todos.json", "w") as file:
+            json.dump(todos,file,indent=4)
+
+        self.id.delete(0,END)
+        self.refresh_the_page()
 
 
 if __name__ == "__main__":#
