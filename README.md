@@ -1,4 +1,6 @@
-# cafenaut
+## URL
+
+https://github.com/maglovskiNenad/TO_dos
 
 ## To-Do Application in Python
 This To-Do application allows users to manage a list of tasks (add, view, update, and delete).
@@ -24,7 +26,3 @@ Tasks are saved in a JSON file, ensuring they persist between sessions.
 
 ## License
 This project is licensed under the MIT License.
-
-## URL
-
-https://github.com/maglovskiNenad/TO_dos
