@@ -24,3 +24,7 @@ Tasks are saved in a JSON file, ensuring they persist between sessions.
 
 ## License
 This project is licensed under the MIT License.
+
+## URL
+
+https://github.com/maglovskiNenad/TO_dos
