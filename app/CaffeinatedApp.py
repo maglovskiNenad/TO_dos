@@ -1,11 +1,7 @@
 from customtkinter import *
 import json
-
-from yaml import safe_dump_all
-
 from app.CustomButton import Button
 from datetime import datetime
-
 
 class CaffeinatedMainWindow(CTk):
     def __init__(self):
@@ -86,13 +82,15 @@ class CaffeinatedMainWindow(CTk):
         with open("todos.json") as file:
             data = json.load(file)
 
-        todos = [todo for todo in data if entered_id != data["id"]]
-        #id proveri
+        new_todos = [todo for todo in data if todo["id"] != int(entered_id)]
+        print(new_todos)
+
         with open("todos.json", "w") as file:
-            json.dump(todos,file,indent=4)
+            json.dump(new_todos,file,indent=4)
 
         self.id.delete(0,END)
         self.refresh_the_page()
+
 
 
 if __name__ == "__main__":#
