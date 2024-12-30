@@ -1,6 +1,6 @@
 ## URL
 
-https://github.com/maglovskiNenad/TO_dos
+https://roadmap.sh/projects/task-tracker
 
 ## To-Do Application in Python
 This To-Do application allows users to manage a list of tasks (add, view, update, and delete).
